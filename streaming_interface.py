@@ -31,4 +31,5 @@ def streaming_interface():
         # Stream response
         with st.spinner("Loading..."):
             answer = st.session_state.questions.respond()
-            assistant_text.markdown(answer)
+            if answer:
+                assistant_text.markdown(answer)

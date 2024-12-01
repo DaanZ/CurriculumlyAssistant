@@ -1,3 +1,4 @@
+import copy
 
 from util.chatgpt import llm_chat
 from util.history import History
@@ -23,10 +24,9 @@ class Questionaire:
         if self.question_index < len(self.questions):
             answer = self.questions[self.question_index]
             self.question_index += 1
-        else:
-            answer = llm_chat(self.history)
-        self.history.assistant(answer)
-        return answer
+            self.history.assistant(answer)
+            return answer
+        return None
 
     def initiate(self):
         self.question_index = 0
@@ -34,6 +34,11 @@ class Questionaire:
 
     def listen(self, message):
         self.history.user(message)
+
+    def classify(self):
+        temp_history = copy.deepcopy(self.history)
+        temp_history.system("Define the user as a high ticket, medium ticket or low ticket based on their answers and their job position they are looking for. Only respond with the ticket category name:")
+        return llm_chat(temp_history)
 
 
 if __name__ == "__main__":
@@ -47,3 +52,4 @@ if __name__ == "__main__":
     print("User: " + user)
     questionaire.listen(user)
     print("Assistant: " + questionaire.respond())
+    print(questionaire.classify())
